@@ -133,6 +133,8 @@ public:
 
         case 2: // la théière
             matrModel.PushMatrix(); {
+                matrModel.Translate(0.0, 1.0, 0.0);
+                matrModel.Rotate(180, 1.0, 0.0, 0.0);
                 matrModel.Scale(0.25, 0.25, 0.25); // À MODIFIER
 
                 glUniformMatrix4fv(locmatrModel, 1, GL_FALSE, matrModel);
