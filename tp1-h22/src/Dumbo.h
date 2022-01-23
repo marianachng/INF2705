@@ -169,11 +169,14 @@ public:
             // créer la première oreille
            
             matrModel.Translate(-0.5, 0.75, 0.5); // (bidon) À MODIFIER
-            matrModel.Rotate(angleRotation, 1.0, 0.0, 0.0);
-            matrModel.Rotate(90, 1.0, 0.0, 0.0);
+            matrModel.Rotate(180, 1.0, 0.0, 0.0);
+            matrModel.Rotate(-angleRotation, 1.0, 0.0, 0.0);
+            
+           
+            
             matrModel.Scale(1.0, 3.0, 1.0);
             
-            //afficherRepereCourant( ); // débogage: montrer le repère à la position courante
+            afficherRepereCourant( ); // débogage: montrer le repère à la position courante
             glUniformMatrix4fv(locmatrModel, 1, GL_FALSE, matrModel);
             afficherQuad();
 
@@ -190,8 +193,10 @@ public:
             // créer la seconde oreille
 
             matrModel.Translate(-0.5, 0.75, -0.5); // (bidon) À MODIFIER
-            matrModel.Rotate(180 - angleRotation, 1.0, 0.0, 0.0);
-            matrModel.Rotate(90, 1.0, 0.0, 0.0);
+           /* matrModel.Rotate(180 - angleRotation, 1.0, 0.0, 0.0);
+            matrModel.Rotate(90, 1.0, 0.0, 0.0);*/
+            matrModel.Rotate(angleRotation, 1.0, 0.0, 0.0);
+            matrModel.Rotate(180, 1.0, 0.0, 0.0);
             matrModel.Scale(1.0, 3.0, 1.0);
             //afficherRepereCourant(); // débogage: montrer le repère à la position courante
             glUniformMatrix4fv(locmatrModel, 1, GL_FALSE, matrModel);
