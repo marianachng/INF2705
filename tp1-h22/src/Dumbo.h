@@ -194,8 +194,8 @@ public:
         // ajouter une ou des transformations afin de tracer chacune des pattes
         matrModel.PushMatrix();{
             matrModel.Translate( -0.5, -0.5, 0.5 );
-            matrModel.Rotate(angleRotation, 0.0, 1.0, 0.0);
-            matrModel.Rotate(45, 1.0, 0.0, 0.0);
+            matrModel.Rotate(45, 0.0, 1.0, 0.0);
+            matrModel.Rotate(angleRotation, 1.0, 0.0, 0.0);
             matrModel.Scale(largMembre, largMembre, longMembre);
             glUniformMatrix4fv( locmatrModel, 1, GL_FALSE, matrModel );
             afficherCylindre();
@@ -203,8 +203,8 @@ public:
 
         matrModel.PushMatrix(); {
             matrModel.Translate(-0.5, -0.5, -0.5);
-            matrModel.Rotate(-angleRotation, 0.0, 1.0, 0.0);
-            matrModel.Rotate(180 - 45, 1.0, 0.0, 0.0);
+            matrModel.Rotate(180 - 45, 0.0, 1.0, 0.0);
+            matrModel.Rotate(angleRotation, 1.0, 0.0, 0.0);
             matrModel.Scale(largMembre, largMembre, longMembre);
             glUniformMatrix4fv(locmatrModel, 1, GL_FALSE, matrModel);
             afficherCylindre();
@@ -212,8 +212,8 @@ public:
 
         matrModel.PushMatrix(); {
             matrModel.Translate(-2.5, -0.5, 0.5);
-            matrModel.Rotate(-angleRotation, 0.0, 1.0, 0.0);
-            matrModel.Rotate(45, 1.0, 0.0, 0.0);
+            matrModel.Rotate(-45, 0.0, 1.0, 0.0);
+            matrModel.Rotate(angleRotation, 1.0, 0.0, 0.0);
             matrModel.Scale(largMembre, largMembre, longMembre);
             glUniformMatrix4fv(locmatrModel, 1, GL_FALSE, matrModel);
             afficherCylindre();
@@ -221,8 +221,8 @@ public:
 
         matrModel.PushMatrix(); {
             matrModel.Translate(-2.5, -0.5, -0.5);
-            matrModel.Rotate(angleRotation, 0.0, 1.0, 0.0);
-            matrModel.Rotate(180 - 45, 1.0, 0.0, 0.0);
+            matrModel.Rotate(45 - 180, 0.0, 1.0, 0.0);
+            matrModel.Rotate(angleRotation, 1.0, 0.0, 0.0);
             matrModel.Scale(largMembre, largMembre, longMembre);
             glUniformMatrix4fv(locmatrModel, 1, GL_FALSE, matrModel);
             afficherCylindre();
