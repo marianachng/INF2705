@@ -98,12 +98,10 @@ public:
     void afficherTheiere()
     {
         glBindVertexArray( vao );
-        // (partie 2) MODIFICATIONS ICI ...
         glBindBuffer(GL_ARRAY_BUFFER, vboTheiereSommets);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboTheiereConnec); 
        
-        glDrawElements(GL_TRIANGLES, sizeof(gTheiereConnec) / sizeof(GLuint),
-            GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, sizeof(gTheiereConnec) / sizeof(GLuint), GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
     }
 
@@ -117,11 +115,7 @@ public:
     //   Les deux faces voisines de la tête et du corps sont collées
     void afficherCorps()
     {
-        // donner la couleur de la tête À MODIFIER
-        glVertexAttrib3f(locColor, 0.5, 0.5, 0.5); // blanc
-
-        // afficherRepereCourant( ); // débogage: montrer le repère à la position courante
-
+        glVertexAttrib3f(locColor, 0.5, 0.5, 0.5); 
         //Afficher la boite
         // afficher le bon modèle
         switch (Etat::modele)
@@ -129,8 +123,7 @@ public:
         default:
         case 1: // la tête (cube)
             matrModel.PushMatrix(); {
-                matrModel.Translate(0.0, 0.5, 0.0 ); // (bidon) À MODIFIER
-                
+                matrModel.Translate(0.0, 0.5, 0.0 );
                 glUniformMatrix4fv(locmatrModel, 1, GL_FALSE, matrModel);
                 afficherCube();
             }matrModel.PopMatrix(); glUniformMatrix4fv(locmatrModel, 1, GL_FALSE, matrModel);
@@ -139,10 +132,8 @@ public:
         case 2: // la théière
             matrModel.PushMatrix(); {
                 matrModel.Translate(0.0, 1.0, 0.0);
-               
                 matrModel.Rotate(180, 1.0, 0.0, 0.0);
-                matrModel.Scale(0.25, 0.25, 0.25); // À MODIFIER
-
+                matrModel.Scale(0.25, 0.25, 0.25);
                 glUniformMatrix4fv(locmatrModel, 1, GL_FALSE, matrModel);
                 afficherTheiere();
             }matrModel.PopMatrix(); glUniformMatrix4fv(locmatrModel, 1, GL_FALSE, matrModel);
@@ -150,11 +141,10 @@ public:
         }
 
         // et son corps
-        glVertexAttrib3f(locColor, 0.4, 0.4, 0.4); // vert À MODIFIER
+        glVertexAttrib3f(locColor, 0.4, 0.4, 0.4);
         matrModel.PushMatrix(); {
-            matrModel.Translate(-1.5, 0.0, 0.0); // (bidon) À MODIFIER
+            matrModel.Translate(-1.5, 0.0, 0.0);
             matrModel.Scale(2.0, 1.0, 1.0);
-
             glUniformMatrix4fv(locmatrModel, 1, GL_FALSE, matrModel);
             afficherCube();
         }matrModel.PopMatrix(); glUniformMatrix4fv(locmatrModel, 1, GL_FALSE, matrModel);
@@ -167,16 +157,14 @@ public:
     void afficherOreille()
     {
         // ajouter une ou des transformations afin de tracer des oreilles
-        glVertexAttrib3f(locColor, 0.6, 0.6, 0.6); // violet À MODIFIER
+        glVertexAttrib3f(locColor, 0.6, 0.6, 0.6);
         matrModel.PushMatrix(); {
 
             // créer la première oreille
-            matrModel.Translate(-0.5, 0.75, 0.5); // (bidon) À MODIFIER
+            matrModel.Translate(-0.5, 0.75, 0.5);
             matrModel.Rotate(180, 1.0, 0.0, 0.0);
             matrModel.Rotate(-angleRotation, 1.0, 0.0, 0.0);
             matrModel.Scale(1.0, 3.0, 1.0);
-            
-            //afficherRepereCourant( ); // débogage: montrer le repère à la position courante
             glUniformMatrix4fv(locmatrModel, 1, GL_FALSE, matrModel);
             afficherQuad();
 
@@ -189,7 +177,6 @@ public:
             matrModel.Rotate(angleRotation, 1.0, 0.0, 0.0);
             matrModel.Rotate(180, 1.0, 0.0, 0.0);
             matrModel.Scale(1.0, 3.0, 1.0);
-            //afficherRepereCourant(); // débogage: montrer le repère à la position courante
             glUniformMatrix4fv(locmatrModel, 1, GL_FALSE, matrModel);
             afficherQuad();
 
@@ -202,47 +189,41 @@ public:
     void afficherPattes()
     {
         // donner la couleur des pattes
-        glVertexAttrib3f(locColor, 0.5, 0.5, 0.5); // marron À MODIFIER
+        glVertexAttrib3f(locColor, 0.5, 0.5, 0.5);
 
         // ajouter une ou des transformations afin de tracer chacune des pattes
         matrModel.PushMatrix();{
-            matrModel.Translate( -0.5, -0.5, 0.5 ); // (bidon) À MODIFIER
+            matrModel.Translate( -0.5, -0.5, 0.5 );
             matrModel.Rotate(angleRotation, 0.0, 1.0, 0.0);
             matrModel.Rotate(45, 1.0, 0.0, 0.0);
             matrModel.Scale(largMembre, largMembre, longMembre);
-            //afficherRepereCourant( ); // débogage: montrer le repère à la position courante
             glUniformMatrix4fv( locmatrModel, 1, GL_FALSE, matrModel );
             afficherCylindre();
         }matrModel.PopMatrix(); glUniformMatrix4fv(locmatrModel, 1, GL_FALSE, matrModel);
 
         matrModel.PushMatrix(); {
-            matrModel.Translate(-0.5, -0.5, -0.5); // (bidon) À MODIFIER
+            matrModel.Translate(-0.5, -0.5, -0.5);
             matrModel.Rotate(-angleRotation, 0.0, 1.0, 0.0);
             matrModel.Rotate(180 - 45, 1.0, 0.0, 0.0);
             matrModel.Scale(largMembre, largMembre, longMembre);
-            //afficherRepereCourant( ); // débogage: montrer le repère à la position courante
             glUniformMatrix4fv(locmatrModel, 1, GL_FALSE, matrModel);
             afficherCylindre();
         }matrModel.PopMatrix(); glUniformMatrix4fv(locmatrModel, 1, GL_FALSE, matrModel);
 
         matrModel.PushMatrix(); {
-            matrModel.Translate(-2.5, -0.5, 0.5); // (bidon) À MODIFIER
+            matrModel.Translate(-2.5, -0.5, 0.5);
             matrModel.Rotate(-angleRotation, 0.0, 1.0, 0.0);
             matrModel.Rotate(45, 1.0, 0.0, 0.0);
             matrModel.Scale(largMembre, largMembre, longMembre);
-            //afficherRepereCourant( ); // débogage: montrer le repère à la position courante
             glUniformMatrix4fv(locmatrModel, 1, GL_FALSE, matrModel);
             afficherCylindre();
         }matrModel.PopMatrix(); glUniformMatrix4fv(locmatrModel, 1, GL_FALSE, matrModel);
 
         matrModel.PushMatrix(); {
-            //matrModel.Translate(position.x, position.y, position.z);
-            //matrModel.Rotate(angleCorps, 1.0, 0.0, 0.0);
-            matrModel.Translate(-2.5, -0.5, -0.5); // (bidon) À MODIFIER
+            matrModel.Translate(-2.5, -0.5, -0.5);
             matrModel.Rotate(angleRotation, 0.0, 1.0, 0.0);
             matrModel.Rotate(180 - 45, 1.0, 0.0, 0.0);
             matrModel.Scale(largMembre, largMembre, longMembre);
-            //afficherRepereCourant( ); // débogage: montrer le repère à la position courante
             glUniformMatrix4fv(locmatrModel, 1, GL_FALSE, matrModel);
             afficherCylindre();
         }matrModel.PopMatrix(); glUniformMatrix4fv(locmatrModel, 1, GL_FALSE, matrModel);
@@ -250,14 +231,9 @@ public:
 
     void afficher()
     {
-        // afficherRepereCourant( ); // débogage: montrer le repère à la position courante
         matrModel.PushMatrix();{ // sauvegarder la transformation courante
 
-            // ajouter une ou des transformations
-            // Dumbo
-            //   est placé à la position courante « position[] »,
-            //   est orienté selon l'angle « angleCorps » et
-            //   est de taille ( taille, taille, taille ),
+            // transformations Dumbo
             matrModel.Translate(position.x, position.y, position.z);
             matrModel.Rotate(angleCorps, 0.0, 1.0, 0.0);
             matrModel.Scale(taille, taille, taille);
