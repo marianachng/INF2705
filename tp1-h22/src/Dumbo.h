@@ -74,9 +74,16 @@ public:
 
         // (partie 2) MODIFICATIONS ICI ...
         // créer le VBO pour les sommets
+        glGenBuffers(1, &vboTheiereSommets);
+        glBindBuffer(GL_ARRAY_BUFFER, vboTheiereSommets);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(gTheiereSommets), gTheiereSommets, GL_STATIC_DRAW); 
+        glVertexAttribPointer(locVertex, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        glEnableVertexAttribArray(locVertex);
 
         // créer le VBO la connectivité
-
+        glGenBuffers(1, &vboTheiereConnec);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboTheiereConnec);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(gTheiereConnec), gTheiereConnec, GL_STATIC_DRAW);
         glBindVertexArray(0);
     }
 
@@ -92,13 +99,11 @@ public:
     {
         glBindVertexArray( vao );
         // (partie 2) MODIFICATIONS ICI ...
-        
-        // vous pouvez utiliser temporairement cette fonction pour la première partie du TP, mais vous ferez mieux dans la seconde partie du TP
-        glBegin( GL_TRIANGLES );
-        for ( unsigned int i = 0 ; i < sizeof(gTheiereConnec)/sizeof(GLuint) ; i++ )
-            glVertex3fv( &(gTheiereSommets[3*gTheiereConnec[i]] ) );
-        glEnd( );
-
+        glBindBuffer(GL_ARRAY_BUFFER, vboTheiereSommets);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboTheiereConnec); 
+       
+        glDrawElements(GL_TRIANGLES, sizeof(gTheiereConnec) / sizeof(GLuint),
+            GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
     }
 
@@ -113,7 +118,7 @@ public:
     void afficherCorps()
     {
         // donner la couleur de la tête À MODIFIER
-        glVertexAttrib3f(locColor, 1.0, 1.0, 1.0); // blanc
+        glVertexAttrib3f(locColor, 0.5, 0.5, 0.5); // blanc
 
         // afficherRepereCourant( ); // débogage: montrer le repère à la position courante
 
@@ -124,8 +129,6 @@ public:
         default:
         case 1: // la tête (cube)
             matrModel.PushMatrix(); {
-                matrModel.Translate(position.x, position.y, position.z);
-                matrModel.Rotate(angleCorps, 1.0, 0.0, 0.0);
                 matrModel.Translate(0.0, 0.5, 0.0 ); // (bidon) À MODIFIER
                 
                 glUniformMatrix4fv(locmatrModel, 1, GL_FALSE, matrModel);
@@ -135,8 +138,6 @@ public:
 
         case 2: // la théière
             matrModel.PushMatrix(); {
-                matrModel.Translate(position.x, position.y, position.z);
-                matrModel.Rotate(angleCorps, 1.0, 0.0, 0.0);
                 matrModel.Translate(0.0, 1.0, 0.0);
                
                 matrModel.Rotate(180, 1.0, 0.0, 0.0);
@@ -149,12 +150,9 @@ public:
         }
 
         // et son corps
-        glVertexAttrib3f(locColor, 0.0, 1.0, 0.0); // vert À MODIFIER
+        glVertexAttrib3f(locColor, 0.4, 0.4, 0.4); // vert À MODIFIER
         matrModel.PushMatrix(); {
-            
-            matrModel.Translate(position.x, position.y, position.z);
             matrModel.Translate(-1.5, 0.0, 0.0); // (bidon) À MODIFIER
-            matrModel.Rotate(angleCorps, 1.0, 0.0, 0.0);
             matrModel.Scale(2.0, 1.0, 1.0);
 
             glUniformMatrix4fv(locmatrModel, 1, GL_FALSE, matrModel);
@@ -169,14 +167,11 @@ public:
     void afficherOreille()
     {
         // ajouter une ou des transformations afin de tracer des oreilles
-        glVertexAttrib3f(locColor, 0.5, 0.5, 1.0); // violet À MODIFIER
+        glVertexAttrib3f(locColor, 0.6, 0.6, 0.6); // violet À MODIFIER
         matrModel.PushMatrix(); {
 
             // créer la première oreille
-            matrModel.Translate(position.x, position.y, position.z);
-            matrModel.Rotate(angleCorps, 1.0, 0.0, 0.0);
             matrModel.Translate(-0.5, 0.75, 0.5); // (bidon) À MODIFIER
-            
             matrModel.Rotate(180, 1.0, 0.0, 0.0);
             matrModel.Rotate(-angleRotation, 1.0, 0.0, 0.0);
             matrModel.Scale(1.0, 3.0, 1.0);
@@ -189,13 +184,8 @@ public:
         }matrModel.PopMatrix(); glUniformMatrix4fv(locmatrModel, 1, GL_FALSE, matrModel);
 
         matrModel.PushMatrix(); {
-
             // créer la seconde oreille
-            
-            matrModel.Translate(position.x, position.y, position.z);
-            matrModel.Rotate(angleCorps, 1.0, 0.0, 0.0);
             matrModel.Translate(-0.5, 0.75, -0.5);
-            
             matrModel.Rotate(angleRotation, 1.0, 0.0, 0.0);
             matrModel.Rotate(180, 1.0, 0.0, 0.0);
             matrModel.Scale(1.0, 3.0, 1.0);
@@ -212,14 +202,11 @@ public:
     void afficherPattes()
     {
         // donner la couleur des pattes
-        glVertexAttrib3f(locColor, 0.9, 0.4, 0.0); // marron À MODIFIER
+        glVertexAttrib3f(locColor, 0.5, 0.5, 0.5); // marron À MODIFIER
 
         // ajouter une ou des transformations afin de tracer chacune des pattes
         matrModel.PushMatrix();{
-            matrModel.Translate(position.x, position.y, position.z);
-            matrModel.Rotate(angleCorps, 1.0, 0.0, 0.0);
             matrModel.Translate( -0.5, -0.5, 0.5 ); // (bidon) À MODIFIER
-            
             matrModel.Rotate(angleRotation, 0.0, 1.0, 0.0);
             matrModel.Rotate(45, 1.0, 0.0, 0.0);
             matrModel.Scale(largMembre, largMembre, longMembre);
@@ -229,10 +216,7 @@ public:
         }matrModel.PopMatrix(); glUniformMatrix4fv(locmatrModel, 1, GL_FALSE, matrModel);
 
         matrModel.PushMatrix(); {
-            matrModel.Translate(position.x, position.y, position.z);
-            matrModel.Rotate(angleCorps, 1.0, 0.0, 0.0);
             matrModel.Translate(-0.5, -0.5, -0.5); // (bidon) À MODIFIER
-           
             matrModel.Rotate(-angleRotation, 0.0, 1.0, 0.0);
             matrModel.Rotate(180 - 45, 1.0, 0.0, 0.0);
             matrModel.Scale(largMembre, largMembre, longMembre);
@@ -242,8 +226,6 @@ public:
         }matrModel.PopMatrix(); glUniformMatrix4fv(locmatrModel, 1, GL_FALSE, matrModel);
 
         matrModel.PushMatrix(); {
-            matrModel.Translate(position.x, position.y, position.z);
-            matrModel.Rotate(angleCorps, 1.0, 0.0, 0.0);
             matrModel.Translate(-2.5, -0.5, 0.5); // (bidon) À MODIFIER
             matrModel.Rotate(-angleRotation, 0.0, 1.0, 0.0);
             matrModel.Rotate(45, 1.0, 0.0, 0.0);
@@ -254,8 +236,8 @@ public:
         }matrModel.PopMatrix(); glUniformMatrix4fv(locmatrModel, 1, GL_FALSE, matrModel);
 
         matrModel.PushMatrix(); {
-            matrModel.Translate(position.x, position.y, position.z);
-            matrModel.Rotate(angleCorps, 1.0, 0.0, 0.0);
+            //matrModel.Translate(position.x, position.y, position.z);
+            //matrModel.Rotate(angleCorps, 1.0, 0.0, 0.0);
             matrModel.Translate(-2.5, -0.5, -0.5); // (bidon) À MODIFIER
             matrModel.Rotate(angleRotation, 0.0, 1.0, 0.0);
             matrModel.Rotate(180 - 45, 1.0, 0.0, 0.0);
@@ -276,6 +258,9 @@ public:
             //   est placé à la position courante « position[] »,
             //   est orienté selon l'angle « angleCorps » et
             //   est de taille ( taille, taille, taille ),
+            matrModel.Translate(position.x, position.y, position.z);
+            matrModel.Rotate(angleCorps, 0.0, 1.0, 0.0);
+            matrModel.Scale(taille, taille, taille);
 
             // afficher le corps
             afficherCorps();
