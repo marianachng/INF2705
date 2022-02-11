@@ -1,6 +1,6 @@
 // Prénoms, noms et matricule des membres de l'équipe:
-// - Prénom1 NOM1 (matricule1)
-// - Prénom2 NOM2 (matricule2)
+// - Adam El-Houssami (2091824)
+// - Mariana chang ieong (2074331)
 #pragma message (": *************** Identifiez les membres de l'équipe dans le fichier 'main.cpp' et commentez cette ligne. ***************")
 
 #if defined(_WIN32) || defined(WIN32)

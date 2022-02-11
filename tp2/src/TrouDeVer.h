@@ -181,7 +181,7 @@ public:
         afficherParoiZneg(); // paroi en -Z
 
         glVertexAttrib4f(locColorBase, 0.7, 0.7, 0.7, 0.15); // gris pâle, plus opaque
-        afficherParoiYpos(); // paroi en -Y
+        afficherParoiYpos(); // paroi en +Y
 
         glVertexAttrib4f(locColorBase, 0.4, 0.4, 0.4, 0.15); // gris foncé, plus opaque
         afficherParoiYneg(); // paroi en -Y
@@ -195,7 +195,7 @@ public:
         // partie 2: modifs ici ...
         Exoplanete *exoplanete = exoplanetes[exoplaneteChoisie-1];
         MatricePipeline mtc = exoplanete->obtenirMatriceCourante();
-        matrVisu.setMatr(mtc);
+        matrVisu.setMatr(glm::inverse(mtc.getMatr()));
     }
 
     void afficherToutesLesExoplanetes()
@@ -245,16 +245,12 @@ public:
         // partie 1: modifs ici ...
 
         glEnable(GL_STENCIL_TEST);
-        glClear(GL_STENCIL_BUFFER_BIT);
 
         // TODO revoir ces valeurs
         glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
 
-        glStencilFunc( GL_ALWAYS , 1, 1);
-        glDisable(GL_DEPTH_TEST);
-        glVertexAttrib4f(locColorBase, 0.2, 0.5, 0.2, 1); // verdâtre
+        glStencilFunc( GL_NEVER, 1, 1);
         afficherParoiZpos(); // paroi en +Z
-        glEnable(GL_DEPTH_TEST);
 
         glStencilFunc( GL_NEVER, 2, 2);
         afficherParoiXpos(); // paroi en +X
@@ -315,15 +311,14 @@ public:
         //FACE 6
 
         glDisable(GL_STENCIL_TEST);
-        //TODO, remove when done, for debug
-        afficherToutesLesExoplanetes();
         
         glUseProgram(progBase);
         // afficher les parois du trou de ver
         afficherParois();
 
-        // lorsqu'on a passer dans le trou de ver, nous voyons l'ensemble des planètes
-        //if (exoplaneteChoisie)  ...
+        if (Etat::exoplaneteChoisie) {
+            afficherToutesLesExoplanetes();
+        }
 
     }
     
