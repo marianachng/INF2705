@@ -73,7 +73,6 @@ public:
         // amener le repère à la position courante de cette planete
         mtc.Rotate(angle, 0.0, 1.0, 0.0);
         mtc.Translate(rayon, hauteur, 0.0);
-        //mtc.Scale(taille, taille, taille);
 
         // Utiliser ou non la rotation geosynchrone
         if (!Etat::orbiteGeosynchrone) {

@@ -206,6 +206,7 @@ public:
         {
             (*it)->afficher();
         }
+        // afficherExosoleil();
     }
 
     // afficher le contenu de la galaxie lointaine dans le trou de ver
@@ -317,6 +318,7 @@ public:
         afficherParois();
 
         if (Etat::exoplaneteChoisie) {
+            glUseProgram(prog);
             afficherToutesLesExoplanetes();
         }
 

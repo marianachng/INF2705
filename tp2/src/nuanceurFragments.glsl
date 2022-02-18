@@ -43,16 +43,47 @@ const bool utiliseBlinn = true;
 
 in Attribs {
     vec4 couleur;
+    vec3 lumiDir;
+    vec3 obsVec;
+    vec3 normale;
 } AttribsIn;
 
 out vec4 FragColor;
 
+vec4 lumiereReflexion(in vec3 normale, in vec3 sourceLumiere, in vec3 observateur){
+    vec4 couleur = vec4(0);
+
+    // ambiant sourceLumiere
+    couleur += FrontMaterial.ambient * LightSource.ambient;
+
+    float dotProd = dot(normale, sourceLumiere);
+    if(dotProd > 0.0){
+        // diffuse
+        couleur += AttribsIn.couleur * LightSource.diffuse * dotProd;
+
+        // speculaire
+        float phongSpec = dot(reflect(-sourceLumiere, normale), observateur);
+        if(phongSpec > 0) couleur += FrontMaterial.specular * LightSource.specular * pow(phongSpec, FrontMaterial.shininess);
+    }
+
+    return couleur;
+}
+
 void main( void )
 {
-    // la couleur du fragment est la couleur interpolée
-    FragColor = AttribsIn.couleur;
+    vec3 sourceLumineuse = normalize(AttribsIn.lumiDir);
+    vec3 normale = normalize(AttribsIn.normale);
+    vec3 observateur = normalize(AttribsIn.obsVec);
 
-    // Mettre un test bidon afin que l'optimisation du compilateur n'élimine la variable "illumination".
-    // Vous ENLEVEREZ ce test inutile!
-    if ( illumination > 10000 ) FragColor.r += 0.001;
+    // ambiante modele
+    vec4 couleur = FrontMaterial.emission + FrontMaterial.ambient * LightModel.ambient;
+
+    couleur += lumiereReflexion(normale, sourceLumineuse, observateur);
+
+    // la couleur du fragment est la couleur interpolée;
+    FragColor = clamp(couleur, 0.0, 1.0);
+
+    if(illumination == 1000){
+       
+    }
 }
