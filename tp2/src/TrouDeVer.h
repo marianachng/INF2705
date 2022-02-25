@@ -288,27 +288,27 @@ public:
         // on trace le contenu de chaque lentille 5 fois
 
         glStencilFunc( GL_EQUAL, 1, 1);
-        afficherToutesLesExoplanetes();
+        afficherContenu();
         //FACE 1
         
         glStencilFunc(GL_EQUAL, 2, 2);
-        afficherToutesLesExoplanetes();
+        afficherContenu();
         //FACE 2
 
         glStencilFunc(GL_EQUAL, 4, 4);
-        afficherToutesLesExoplanetes();
+        afficherContenu();
         //FACE 3
 
         glStencilFunc(GL_EQUAL, 8, 8);
-        afficherToutesLesExoplanetes();
+        afficherContenu();
         //FACE 4
 
         glStencilFunc(GL_EQUAL, 16, 16);
-        afficherToutesLesExoplanetes();
+        afficherContenu();
         //FACE 5
 
         glStencilFunc(GL_EQUAL, 32, 32);
-        afficherToutesLesExoplanetes();
+        afficherContenu();
         //FACE 6
 
         glDisable(GL_STENCIL_TEST);
@@ -319,7 +319,7 @@ public:
 
         if (Etat::exoplaneteChoisie) {
             glUseProgram(prog);
-            afficherToutesLesExoplanetes();
+            afficherContenu();
         }
 
     }

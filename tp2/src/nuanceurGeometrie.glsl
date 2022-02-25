@@ -27,8 +27,8 @@ void main(){
     for ( int i = 0 ; i < gl_in.length() ; ++i ){
         gl_Position = matrProj * gl_in[i].gl_Position;
         AttribsOut.couleur = AttribsIn[i].couleur;
-        AttribsOut.lumiDir = (matrVisu * matrModel * vec4(lumiDir, 1.0)).xyz;
-        AttribsOut.obsVec = (matrVisu * matrModel * vec4(obsVec, 1.0)).xyz;
+        AttribsOut.lumiDir = lumiDir;
+        AttribsOut.obsVec = obsVec;
         AttribsOut.normale = normale;
         EmitVertex();
     }

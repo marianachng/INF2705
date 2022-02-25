@@ -59,6 +59,8 @@ layout(location=8) in vec4 TexCoord;
 
 out Attribs {
     vec4 couleur;
+    vec3 normale;
+    vec3 observateur;
 } AttribsOut;
 
 float calculerSpot( in vec3 D, in vec3 L, in vec3 N )
@@ -92,14 +94,22 @@ vec4 calculerReflexion( in int j, in vec3 L, in vec3 N, in vec3 O ) // pour la l
 void main( void )
 {
     // appliquer la transformation standard du sommet (P * V * M * sommet)
-    gl_Position = matrProj * matrVisu * matrModel * Vertex;
+    vec4 cameraRef = matrVisu * matrModel * Vertex;
+    gl_Position = matrProj * cameraRef;
 
     // calcul de la composante ambiante du modèle
     vec4 coul = FrontMaterial.emission + FrontMaterial.ambient * LightModel.ambient;
 
-    // couleur du sommet
-    int j = 0;
-    // ... = calculerReflexion( j, L, N, O );
+    vec3 N = normalize( Normal );
+    vec3 O = normalize(-cameraRef.xyz);
 
+    // couleur du sommet
+    for(int j = 0; j < 3; j++){
+        vec3 L = normalize(LightSource.spotDirection[j]);
+        coul += calculerReflexion( j, L, N, O );
+    }
+
+    AttribsOut.observateur = O;
+    AttribsOut.normale = N;
     AttribsOut.couleur = clamp( coul, 0.0, 1.0 );
 }

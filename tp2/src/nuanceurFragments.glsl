@@ -56,10 +56,10 @@ vec4 lumiereReflexion(in vec3 normale, in vec3 sourceLumiere, in vec3 observateu
     // ambiant sourceLumiere
     couleur += FrontMaterial.ambient * LightSource.ambient;
 
-    float dotProd = dot(normale, sourceLumiere);
-    if(dotProd > 0.0){
+    float produitScalaire = dot(normale, sourceLumiere);
+    if(produitScalaire > 0.0){
         // diffuse
-        couleur += AttribsIn.couleur * LightSource.diffuse * dotProd;
+        couleur += AttribsIn.couleur * LightSource.diffuse * produitScalaire;
 
         // speculaire
         float phongSpec = dot(reflect(-sourceLumiere, normale), observateur);
@@ -71,8 +71,12 @@ vec4 lumiereReflexion(in vec3 normale, in vec3 sourceLumiere, in vec3 observateu
 
 void main( void )
 {
+    if(illumination == 0){
+       FragColor = AttribsIn.couleur;
+       return;
+    }
     vec3 sourceLumineuse = normalize(AttribsIn.lumiDir);
-    vec3 normale = normalize(AttribsIn.normale);
+    vec3 normale = normalize(gl_FrontFacing?AttribsIn.normale:-AttribsIn.normale);
     vec3 observateur = normalize(AttribsIn.obsVec);
 
     // ambiante modele
@@ -80,10 +84,5 @@ void main( void )
 
     couleur += lumiereReflexion(normale, sourceLumineuse, observateur);
 
-    // la couleur du fragment est la couleur interpolée;
     FragColor = clamp(couleur, 0.0, 1.0);
-
-    if(illumination == 1000){
-       
-    }
 }

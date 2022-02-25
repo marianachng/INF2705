@@ -53,6 +53,8 @@ uniform sampler2D laTextureNorm;
 
 in Attribs {
     vec4 couleur;
+    vec3 normale;
+    vec3 observateur;
 } AttribsIn;
 
 out vec4 FragColor;
@@ -89,11 +91,16 @@ void main( void )
 {
     // ...
     vec4 coul = AttribsIn.couleur; // la composante ambiante déjà calculée (dans nuanceur de sommets)
+    FragColor = coul;
 
-    int j = 0;
-    // vec4 coul = calculerReflexion( j, L, N, O );
-    // ...
-    FragColor = 0.01*coul + vec4( 0.5, 0.5, 0.5, 1.0 ); // gris moche!
+    if(typeIllumination == 0) return;
+    vec3 rightNormale = gl_FrontFacing ? AttribsIn.normale : -AttribsIn.normale;
+
+    for(int j = 0; j < 3; j++){
+        vec3 L = normalize(LightSource.spotDirection[j]);
+        coul += calculerReflexion( j, L, rightNormale, AttribsIn.observateur );
+    }
+    FragColor = coul;
 
     // Pour « voir » les normales, on peut remplacer la couleur du fragment par la normale.
     // (Les composantes de la normale variant entre -1 et +1, il faut

@@ -407,7 +407,14 @@ void FenetreTP::initialiser()
     };
 
     // partie 1: définir les normales
-    // GLfloat normales[3*4*6] = { ... };  // (0,+1,0), ... (0,0,-1), ... (+1,0,0), etc.
+    GLfloat normales[3*4*6] = { 
+         0.0,  1.0,  0.0,   0.0,  1.0,  0.0,   0.0,  1.0,  0.0,   0.0,  1.0,  0.0,
+         0.0,  0.0, -1.0,   0.0,  0.0, -1.0,   0.0,  0.0, -1.0,   0.0,  0.0, -1.0,
+         1.0,  0.0,  0.0,   1.0,  0.0,  0.0,   1.0,  0.0,  0.0,   1.0,  0.0,  0.0,
+         0.0,  0.0,  1.0,   0.0,  0.0,  1.0,   0.0,  0.0,  1.0,   0.0,  0.0,  1.0,
+        -1.0,  0.0,  0.0,  -1.0,  0.0,  0.0,  -1.0,  0.0,  0.0,  -1.0,  0.0,  0.0,
+         0.0, -1.0,  0.0,   0.0, -1.0,  0.0,   0.0, -1.0,  0.0,   0.0, -1.0,  0.0,
+    };
 
     // partie 2: définir les coordonnées de texture
     // const GLfloat             // les différentes parties du monde  (voir figure 15)
@@ -433,7 +440,11 @@ void FenetreTP::initialiser()
     glVertexAttribPointer( locVertex, 3, GL_FLOAT, GL_FALSE, 0, 0 );
     glEnableVertexAttribArray(locVertex);
     // partie 1: charger le VBO pour les normales
-    // ...
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(normales), normales, GL_STATIC_DRAW);
+    glVertexAttribPointer(locNormal, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(locNormal);
+
     // partie 2: charger les deux VBO pour les coordonnées de texture: celle pour la Terre sur le cube et pour les autres textures
     // ...
 
