@@ -100,11 +100,12 @@ void main( void )
     // calcul de la composante ambiante du modèle
     vec4 coul = FrontMaterial.emission + FrontMaterial.ambient * LightModel.ambient;
 
-    vec3 N = normalize( Normal );
+    vec3 N = -normalize( Normal );
     vec3 O = normalize(-cameraRef.xyz);
 
     // couleur du sommet
     for(int j = 0; j < 3; j++){
+        // vec3 L = normalize(matrVisu * vec4(LightSource.spotDirection[j], 1.0)).xyz;
         vec3 L = normalize(LightSource.spotDirection[j]);
         coul += calculerReflexion( j, L, N, O );
     }
