@@ -48,6 +48,11 @@ glm::vec4 rgbColor[3] = { glm::vec4(1.0, 0.3, 0.3, 1.0),
                           glm::vec4(0.3, 0.3, 1.0, 1.0),
 };
 
+glm::vec4 cmjColor[3] = { glm::vec4(0.0, 0.7, 0.7, 1.0),
+                          glm::vec4(0.7, 0.0, 0.7, 1.0),
+                          glm::vec4(0.7, 0.7, 0.0, 1.0),
+};
+
 struct LightSourceParameters
 {
     glm::vec4 ambient[3];
@@ -562,6 +567,12 @@ void afficherLumieres()
     for ( int i = 0 ; i < 3 ; ++i )
     {
         // mettre qulequchose ici
+        if (Etat::couleurSpotLight) {
+            LightSource.diffuse[i] = rgbColor[i];
+        }
+        else {
+            LightSource.diffuse[i] = cmjColor[i];
+        }
         glVertexAttrib3f( locColorBase, 2*LightSource.diffuse[i].r, 2*LightSource.diffuse[i].g, 2*LightSource.diffuse[i].b ); // couleur
 #if 1
         // dessiner une ligne vers le spot
@@ -846,19 +857,6 @@ void FenetreTP::clavier( TP_touche touche )
     case TP_y: // Changer la couleur des spotlights
         if (++Etat::couleurSpotLight > 1) Etat::couleurSpotLight = 0;
         std::cout << " Etat::couleurSpotLight=" << Etat::couleurSpotLight << std::endl;
-
-        // changement de couleur
-        for (int i = 0; i < 3; i++) {
-            float black = fmin(fmin(1 - LightSource.ambient[i].x, 1 - LightSource.ambient[i].y), 1 - LightSource.ambient[i].z);
-            float cyan = (1 - LightSource.ambient[i].x - black) / (1 - black);
-            float magenta = (1 - LightSource.ambient[i].y - black) / (1 - black);
-            float yellow = (1 - LightSource.ambient[i].z - black) / (1 - black);
-            LightSource.ambient[i] = glm::vec4(cyan, magenta, yellow, 1.0);
-        }
-
-        glBindBuffer(GL_UNIFORM_BUFFER, ubo[0]);
-        glBufferData(GL_UNIFORM_BUFFER, sizeof(LightSource), &LightSource, GL_DYNAMIC_COPY);
-
         break;
 
     case TP_1:
