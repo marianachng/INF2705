@@ -55,6 +55,7 @@ in Attribs {
     vec4 couleur;
     vec3 normale;
     vec3 observateur;
+    vec2 textCoordinate;
 } AttribsIn;
 
 out vec4 FragColor;
@@ -89,8 +90,11 @@ vec4 calculerReflexion( in int j, in vec3 L, in vec3 N, in vec3 O ) // pour la l
 
 void main( void )
 {
-    // ...
     vec4 coul = AttribsIn.couleur; // la composante ambiante déjà calculée (dans nuanceur de sommets)
+    if(iTexCoul != 0){
+        // appliquer la texture
+        coul = texture(laTextureCoul, AttribsIn.textCoordinate.st);
+    }
     FragColor = coul;
 
     if(typeIllumination == 0) return;

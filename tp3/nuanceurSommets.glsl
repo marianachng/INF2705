@@ -61,6 +61,7 @@ out Attribs {
     vec4 couleur;
     vec3 normale;
     vec3 observateur;
+    vec2 textCoordinate;
 } AttribsOut;
 
 float calculerSpot( in vec3 D, in vec3 L, in vec3 N )
@@ -113,4 +114,5 @@ void main( void )
     AttribsOut.observateur = O;
     AttribsOut.normale = N;
     AttribsOut.couleur = clamp( coul, 0.0, 1.0 );
+    AttribsOut.textCoordinate = TexCoord.st;
 }
