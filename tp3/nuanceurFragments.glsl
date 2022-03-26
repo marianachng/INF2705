@@ -94,6 +94,7 @@ void main( void )
     if(iTexCoul != 0){
         // appliquer la texture
         coul = texture(laTextureCoul, AttribsIn.textCoordinate.st);
+        if(length(coul.rgb) < 0.5) discard;
     }
     FragColor = coul;
 
@@ -104,7 +105,7 @@ void main( void )
         vec3 L = normalize(LightSource.spotDirection[j]);
         coul += calculerReflexion( j, L, rightNormale, AttribsIn.observateur );
     }
-    FragColor = coul;
+    FragColor = clamp(coul, 0.0, 1.0);
 
     // Pour « voir » les normales, on peut remplacer la couleur du fragment par la normale.
     // (Les composantes de la normale variant entre -1 et +1, il faut
