@@ -53,6 +53,8 @@ uniform mat3 matrNormale;
 
 /////////////////////////////////////////////////////////////////
 
+uniform sampler2D laTextureNorm;
+
 layout(location=0) in vec4 Vertex;
 layout(location=2) in vec3 Normal;
 layout(location=8) in vec4 TexCoord;
@@ -60,7 +62,7 @@ layout(location=8) in vec4 TexCoord;
 out Attribs {
     vec4 couleur;
     vec3 normale;
-    vec3 observateur;
+    vec4 CameraRefposition;
     vec2 textCoordinate;
 } AttribsOut;
 
@@ -94,25 +96,38 @@ vec4 calculerReflexion( in int j, in vec3 L, in vec3 N, in vec3 O ) // pour la l
 
 void main( void )
 {
-    // appliquer la transformation standard du sommet (P * V * M * sommet)
     vec4 cameraRef = matrVisu * matrModel * Vertex;
+
+    // appliquer la transformation standard du sommet (P * V * M * sommet)
     gl_Position = matrProj * cameraRef;
 
     // calcul de la composante ambiante du modèle
     vec4 coul = FrontMaterial.emission + FrontMaterial.ambient * LightModel.ambient;
 
-    vec3 N = -normalize( Normal );
+    // calcul de la coordonne de texture actuelle
+    vec2 textCoord = vec2(TexCoord.s - tempsGlissement, TexCoord.t);
+
+    vec3 N = normalize( matrNormale * Normal );
     vec3 O = normalize(-cameraRef.xyz);
 
-    // couleur du sommet
-    for(int j = 0; j < 3; j++){
-        // vec3 L = normalize(matrVisu * vec4(LightSource.spotDirection[j], 1.0)).xyz;
-        vec3 L = normalize(LightSource.spotDirection[j]);
-        coul += calculerReflexion( j, L, N, O );
+    // on veut juste modifier la valeur de la lumiere dans ce nuanceur pour le modele de Gouraud
+    if(typeIllumination == 0){
+
+        // verifier si on veut modifier la valeur de la normale avec la texture (3b)
+        if(iTexNorm != 0){
+            vec3 normalTextValeur = texture(laTextureNorm, textCoord.st).rgb;
+            N = N + normalize((normalTextValeur - 0.5) * 2.0);
+        }
+
+        // ajouter les effets de chaque source de lumiere
+        for(int j = 0; j < 3; j++){
+            vec3 L = normalize((matrVisu * LightSource.position[j]) - cameraRef).xyz;
+            coul += calculerReflexion( j, L, N, O );
+        }
     }
 
-    AttribsOut.observateur = O;
-    AttribsOut.normale = N;
+    AttribsOut.CameraRefposition = cameraRef;
+    AttribsOut.normale = normalize( matrNormale * Normal );
     AttribsOut.couleur = clamp( coul, 0.0, 1.0 );
-    AttribsOut.textCoordinate = TexCoord.st;
+    AttribsOut.textCoordinate = textCoord;
 }

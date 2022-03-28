@@ -544,6 +544,9 @@ void afficherModele()
             // afficher le cube
             glUniformMatrix4fv( locmatrModel, 1, GL_FALSE, matrModel );
             // (partie 1: ne pas oublier de calculer et donner une matrice pour les transformations des normales)
+            glm::mat3 matriceVM = glm::mat3(matrVisu.getMatr() * matrModel.getMatr());
+            glm::mat3 matriceNormale = glm::inverse(matriceVM);
+            glUniformMatrix3fv( locmatrNormale, 1, GL_TRUE, glm::value_ptr(matriceNormale));
             glBindVertexArray( vao[0] );
 
             // partie 2, changer les coordonnes de textures pour la mappe monde
@@ -610,7 +613,7 @@ void afficherLumieres()
             LightSource.diffuse[i] = cmjColor[i];
         }
         glVertexAttrib3f( locColorBase, 2*LightSource.diffuse[i].r, 2*LightSource.diffuse[i].g, 2*LightSource.diffuse[i].b ); // couleur
-#if 1
+#if 0
         // dessiner une ligne vers le spot
         GLfloat coords[] =
         {

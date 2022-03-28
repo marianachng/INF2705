@@ -51,10 +51,12 @@ uniform sampler2D laTextureNorm;
 
 /////////////////////////////////////////////////////////////////
 
+uniform mat4 matrVisu;
+
 in Attribs {
     vec4 couleur;
     vec3 normale;
-    vec3 observateur;
+    vec4 CameraRefposition;
     vec2 textCoordinate;
 } AttribsIn;
 
@@ -91,24 +93,43 @@ vec4 calculerReflexion( in int j, in vec3 L, in vec3 N, in vec3 O ) // pour la l
 void main( void )
 {
     vec4 coul = AttribsIn.couleur; // la composante ambiante déjà calculée (dans nuanceur de sommets)
+    
     if(iTexCoul != 0){
-        // appliquer la texture
-        coul = texture(laTextureCoul, AttribsIn.textCoordinate.st);
-        if(length(coul.rgb) < 0.5) discard;
+        // obtenir la valeur de la texture
+        vec4 textureColor = texture(laTextureCoul, AttribsIn.textCoordinate.st);
+
+        // verifier le teint de la texture (pour les couleurs foncees)
+        if(length(textureColor.rgb) < 0.5) discard;
+
+        // attenuation pour les couleurs blanche
+        if(length(textureColor.rgb) > length(vec3(0.95))) textureColor /= 4;
+
+        // ajouter la couleur de la texture a la couleur ambiante
+        coul += textureColor;
     }
+
     FragColor = coul;
 
+    // si le modele d'illumination est Gouraud, on ne veut pas refaire les calculs d'illumination
     if(typeIllumination == 0) return;
-    vec3 rightNormale = gl_FrontFacing ? AttribsIn.normale : -AttribsIn.normale;
+
+    vec3 N = AttribsIn.normale;
+
+    // recalculer la nouvelle normale avec les nouvelles coordonnees de texture suite a l'interpolation
+    if(iTexNorm != 0){
+        vec3 normalTextValeur = texture(laTextureNorm, AttribsIn.textCoordinate.st).rgb;
+        N = normalize(N + normalize((normalTextValeur - 0.5) * 2.0));
+    }
 
     for(int j = 0; j < 3; j++){
-        vec3 L = normalize(LightSource.spotDirection[j]);
-        coul += calculerReflexion( j, L, rightNormale, AttribsIn.observateur );
+        vec3 L = normalize(matrVisu * LightSource.position[j] - AttribsIn.CameraRefposition).xyz;
+        coul += calculerReflexion( j, L, N, normalize(-AttribsIn.CameraRefposition.xyz));
     }
+
     FragColor = clamp(coul, 0.0, 1.0);
 
     // Pour « voir » les normales, on peut remplacer la couleur du fragment par la normale.
     // (Les composantes de la normale variant entre -1 et +1, il faut
     // toutefois les convertir en une couleur entre 0 et +1 en faisant (N+1)/2.)
-    //if ( afficheNormales ) FragColor = clamp( vec4( (N+1)/2, AttribsIn.couleur.a ), 0.0, 1.0 );
+    if ( afficheNormales ) FragColor = clamp( vec4( (AttribsIn.normale+1)/2, AttribsIn.couleur.a ), 0.0, 1.0 );
 }
