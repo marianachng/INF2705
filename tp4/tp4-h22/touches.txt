@@ -1,0 +1,28 @@
+\texttt{q} &  Quitter l'application \\
+\texttt{x} &  Activer/désactiver l'affichage des axes \\
+\texttt{v} &  Recharger les fichiers des nuanceurs et recréer le programme \\
+\texttt{j} &  Incrémenter le nombre de particules \\
+\texttt{u} &  Décrémenter le nombre de particules \\
+\texttt{i} &  Imprimer les caractéristiques des 10 premières particules \\
+\texttt{PAGEPREC} &  Augmenter la dimension de la boîte en X \\
+\texttt{PAGESUIV} &  Diminuer la dimension de la boîte en X \\
+\texttt{DROITE} &  Augmenter la dimension de la boîte en Y \\
+\texttt{GAUCHE} &  Diminuer la dimension de la boîte en Y \\
+\texttt{HAUT} &  Augmenter la dimension de la boîte en Z \\
+\texttt{BAS} &  Diminuer la dimension de la boîte en Z \\
+\texttt{0} &  Remettre le puits à la position initiale \\
+\texttt{PLUS} &  Avancer la caméra \\
+\texttt{MOINS} &  Reculer la caméra \\
+\texttt{b} &  Incrémenter la gravité \\
+\texttt{h} &  Décrémenter la gravité \\
+\texttt{l} &  Incrémenter la durée de vie maximale \\
+\texttt{k} &  Décrémenter la durée de vie maximale \\
+\texttt{f} &  Incrémenter la taille des particules \\
+\texttt{d} &  Décrémenter la taille des particules \\
+\texttt{t} &  Changer la texture utilisée: 0-aucune, 1-mario, 2-le soleil\\
+\texttt{a} &  Boucler sur les textures automatiquement \\
+\texttt{g} &  Permuter l'affichage en fil de fer ou plein \\
+\texttt{ESPACE} &  Mettre en pause ou reprendre l'animation \\
+\texttt{BOUTON GAUCHE} &  Manipuler la caméra \\
+\texttt{BOUTON DROIT} &  Déplacer le puits \\
+\texttt{Molette} &  Changer la distance de la caméra \\
