@@ -28,6 +28,8 @@ FormeDisque *disque = NULL;
 // déclaration des variables globales //
 ////////////////////////////////////////
 
+void afficherModele();
+
 // les particules
 struct Particule
 {
@@ -74,6 +76,7 @@ void calculerPhysique( )
         glUniform3fv( locposPuitsRetroaction, 1, glm::value_ptr(Etat::posPuits) );
         glUniform3fv( locbDimRetroaction, 1, glm::value_ptr(Etat::bDim) );
 
+
         // charger les blocs de variables uniformes (ubo)
         if ( indvarsUnifRetroaction != GL_INVALID_INDEX )
         {
@@ -85,32 +88,28 @@ void calculerPhysique( )
             glUniformBlockBinding( prog, indvarsUnifRetroaction, bindingIndex );
         }
 
-        // faire les transformations de retour (rétroaction)
-        // ... (MODIFIER)
-        // glBindBufferBase(...);
-        // ...
-        // glBindVertexArray( ... );         // sélectionner le second VAO
-        // se préparer
-        // glBindBuffer( ... );
-        // glVertexAttribPointer( locVertexRetroaction, 3, GL_FLOAT, GL_FALSE, sizeof(Particule), reinterpret_cast<void*>( offsetof(Particule,position) ) );
-        // glVertexAttribPointer( locColorRetroaction, 4, GL_FLOAT, GL_FALSE, sizeof(Particule), reinterpret_cast<void*>( offsetof(Particule,couleur) ) );
-        // glVertexAttribPointer( locvitesseRetroaction, 3, GL_FLOAT, GL_FALSE, sizeof(Particule), reinterpret_cast<void*>( offsetof(Particule,vitesse) ) );
-        // glVertexAttribPointer( loctempsDeVieRestantRetroaction, 1, GL_FLOAT, GL_FALSE, sizeof(Particule), reinterpret_cast<void*>( offsetof(Particule,tempsDeVieRestant) ) );
+         //faire les transformations de retour (rétroaction)
+         glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, vbo[1]);
+         glBindVertexArray(vao[1]);         // sélectionner le second VAO
+         glBindBuffer(GL_ARRAY_BUFFER ,vbo[0]);
+         glVertexAttribPointer( locVertexRetroaction, 3, GL_FLOAT, GL_FALSE, sizeof(Particule), reinterpret_cast<void*>( offsetof(Particule,position) ) );
+         glVertexAttribPointer( locColorRetroaction, 4, GL_FLOAT, GL_FALSE, sizeof(Particule), reinterpret_cast<void*>( offsetof(Particule,couleur) ) );
+         glVertexAttribPointer( locvitesseRetroaction, 3, GL_FLOAT, GL_FALSE, sizeof(Particule), reinterpret_cast<void*>( offsetof(Particule,vitesse) ) );
+         glVertexAttribPointer( loctempsDeVieRestantRetroaction, 1, GL_FLOAT, GL_FALSE, sizeof(Particule), reinterpret_cast<void*>( offsetof(Particule,tempsDeVieRestant) ) );
 
+         // débuter la requête (si impression)
+         if (Etat::impression) {
+             glBeginQuery(GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN, requete);
+         }
 
-        // débuter la requête (si impression)
-        if ( Etat::impression )
-            glBeginQuery( GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN, requete );
+         glBeginTransformFeedback(GL_POINTS);
+         glDrawArrays(GL_POINTS, 0, Etat::nparticules);
+         glEndTransformFeedback();
 
-        // « dessiner » pour la rétroaction
-        // ... (MODIFIER)
-        // ...
-        // glDrawArrays( GL_POINTS, ... );
-        // ...
-
-        // terminer la requête (si impression)
-        if ( Etat::impression )
-            glEndQuery( GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN );
+         // terminer la requête (si impression)
+         if (Etat::impression) {
+             glEndQuery(GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN);
+         }
 
         glBindVertexArray( 0 );              // désélectionner le VAO
 
@@ -340,8 +339,8 @@ void chargerNuanceurs()
         }
 
         // À MODIFIER (partie 1)
-        //const GLchar* vars[] = { ... };
-        //glTransformFeedbackVaryings( progRetroaction, sizeof(vars)/sizeof(vars[0]), vars, GL_INTERLEAVED_ATTRIBS );
+        const GLchar* vars[] = { "VertexMod", "ColorMod", "vitesseMod", "tempsDeVieRestantMod"};
+        glTransformFeedbackVaryings( progRetroaction, sizeof(vars)/sizeof(vars[0]), vars, GL_INTERLEAVED_ATTRIBS );
 
         // faire l'édition des liens du programme
         glLinkProgram( progRetroaction );

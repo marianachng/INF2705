@@ -44,7 +44,7 @@ void main( void )
         const float COULMAX = 0.9; // valeur maximale d'une composante de couleur lorsque la particule (re)naît
 
         // faire renaitre la particule au puits
-        VertexMod = vec3(0.0); // à modifier
+        VertexMod = posPuits; // à retcheck
 
         // assigner un vitesse (pseudo) aléatoire
         vitesseMod = vec3( mix( -25.0, 25.0, aleatoire() ),   // entre -25 et 25
@@ -53,36 +53,47 @@ void main( void )
         //vitesseMod = vec3( 0.0, 30.0, 50.0 );
 
         // nouveau temps de vie (pseudo) aléatoire
-        tempsDeVieRestantMod = 0.0; // à modifier pour une valeur entre 0 et tempsDeVieMax secondes
+        tempsDeVieRestantMod = tempsDeVieMax * aleatoire(); // obtenir une valeur entre 0 et tempsDeVieMax secondes
 
         // couleur (pseudo) aléatoire par interpolation linéaire entre COULMIN et COULMAX
-        ColorMod = vec4(0.0); // à modifier
+        ColorMod = vec4(mix( COULMIN, COULMAX, aleatoire()), 
+                        mix( COULMIN, COULMAX, aleatoire()),
+                        mix( COULMIN, COULMAX, aleatoire()),
+                        mix( COULMIN, COULMAX, aleatoire()) ); // obtenir une couleur aleatoire
     }
     else
     {
         // avancer la particule (méthode de Euler)
-        VertexMod = Vertex; // modifier ...
+        VertexMod = Vertex + vitesse * dt;
         vitesseMod = vitesse;
 
         // diminuer son temps de vie
-        tempsDeVieRestantMod = tempsDeVieRestant; // modifier ...
+        tempsDeVieRestantMod = tempsDeVieRestant - dt; // a revoir
 
         // garder la couleur courante
         ColorMod = Color;
 
         // gérer la collision avec la demi-sphère
-        // ...
+        vec3 posSphereUnitaire =  VertexMod / bDim ;
 
-        // gérer la ccollision avec le sol
+        float dist = length ( posSphereUnitaire );
+        if ( dist >= 1.0 ) // la particule est sortie de la bulle
+        {
+            vec3 vitSphereUnitaire =  vitesseMod * bDim ;
+            VertexMod = ( 2.0 - dist ) * VertexMod ;
+            vec3 N = posSphereUnitaire / dist ; // normaliser N
+            vec3 vitReflechieSphUnitaire = reflect ( vitSphereUnitaire , N );
+            vitesseMod = vitReflechieSphUnitaire / bDim ;
+        }
+
+        // gérer la collision avec le sol
         // hauteur minimale à laquelle une collision avec le plancher survient
         const float hauteurPlancher = 3.0;
-        // ...
-
+        if (VertexMod.z <= hauteurPlancher){
+            vitesseMod = vec3(vitesseMod.x, -vitesseMod.y, vitesseMod.z);
+            VertexMod.z = hauteurPlancher + 0.001; // dx, juste pour s'assurer que nous sommes a l'interieur de la bulle
+        }
         // appliquer la gravité
-        // ...
+        vitesseMod = vitesseMod - (gravite * dt);
     }
-
-    // Mettre un test bidon afin que l'optimisation du compilateur n'élimine pas les attributs dt, gravite, tempsDeVieMax posPuits et bDim.
-    // Vous ENLEVEREZ cet énoncé inutile!
-    if ( dt+bDim.x+gravite+tempsDeVieMax+posPuits.x < -100000 ) tempsDeVieRestantMod += .000001;
 }
