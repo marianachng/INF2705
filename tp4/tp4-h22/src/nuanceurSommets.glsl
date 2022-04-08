@@ -28,7 +28,7 @@ out Attribs {
 void main( void )
 {
     // transformation standard du sommet, ** sans la projection **
-    gl_Position = matrVisu * matrModel * Vertex;
+    gl_Position = matrVisu * matrModel * Vertex; // 
 
     AttribsOut.tempsDeVieRestant = tempsDeVieRestant;
 
