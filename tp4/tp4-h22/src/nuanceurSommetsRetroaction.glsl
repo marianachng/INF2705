@@ -89,11 +89,11 @@ void main( void )
         // gérer la collision avec le sol
         // hauteur minimale à laquelle une collision avec le plancher survient
         const float hauteurPlancher = 3.0;
-        if (VertexMod.z <= hauteurPlancher){
-            vitesseMod = vec3(vitesseMod.x, -vitesseMod.y, vitesseMod.z);
-            VertexMod.z = hauteurPlancher + 0.001; // dx, juste pour s'assurer que nous sommes a l'interieur de la bulle
+        if (VertexMod.z < hauteurPlancher){
+            vitesseMod.z = -vitesseMod.z; // vec3(vitesseMod.x, -vitesseMod.y, vitesseMod.z);
+            VertexMod.z = hauteurPlancher; // + 0.001 - not needed dx, juste pour s'assurer que nous sommes a l'interieur de la bulle
         }
         // appliquer la gravité
-        vitesseMod = vitesseMod - (gravite * dt);
+        vitesseMod.z = vitesseMod.z - (gravite * dt);
     }
 }
