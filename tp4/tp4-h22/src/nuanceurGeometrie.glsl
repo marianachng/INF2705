@@ -50,8 +50,11 @@ void main()
     for ( int i = 0 ; i < 4 ; ++i ) {
 
         AttribsOut.texCoord = texture[i];
+
+        
         vec4 transformPos = gl_in[0].gl_Position;
-        gl_Position = vec4(0.0, decalage[i].x, decalage[i].y, 0.0); // matrVisu * matrModel;
+        gl_Position = matrProj * gl_in[0].gl_Position;
+        // gl_Position = vec4(0.0, decalage[i].x, decalage[i].y, 0.0); // matrVisu * matrModel;
 
         if ( texnumero == 2 ) {
             mat2 rotation;
