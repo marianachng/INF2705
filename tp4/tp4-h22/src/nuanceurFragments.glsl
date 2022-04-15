@@ -7,6 +7,7 @@ in Attribs {
     vec4 couleur;
     vec2 texCoord;
     float tempsDeVieRestant;
+    int estInerte;
 } AttribsIn;
 
 out vec4 FragColor;
@@ -22,17 +23,17 @@ void main( void )
             currentTex.s = ( currentTex.s + num ) / nlutins ;
         }
 
-        //else if ( texnumero == 2 ) {
-            //mat2 rotation;
-            //float theta = 4.0 * AttribsIn.tempsDeVieRestant;
-            //rotation[0] = vec2(cos(theta), sin(theta));
-            //rotation[1] = vec2(-sin(theta), cos(theta));
+        else if ( (texnumero == 2) && (AttribsIn.estInerte == 0)) {
+            mat2 rotation;
+            float theta = 4.0 * AttribsIn.tempsDeVieRestant;
+            rotation[0] = vec2(cos(theta), sin(theta));
+            rotation[1] = vec2(-sin(theta), cos(theta));
 
-            // currentTex -= vec2(0.5); // careful 
-            //currentTex = rotation * currentTex;
-            // currentTex += vec2(0.5);
+            currentTex -= vec2(0.5); // careful 
+            currentTex = rotation * currentTex;
+            currentTex += vec2(0.5);
 
-        //}
+        }
 
         vec4 texColor = texture(leLutin, currentTex);
         if( texColor.a < 0.1) discard;

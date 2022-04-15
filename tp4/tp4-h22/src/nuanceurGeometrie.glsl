@@ -20,14 +20,15 @@ layout (std140) uniform varsUnif
 in Attribs {
     vec4 couleur;
     float tempsDeVieRestant;
-    //float sens; // du vol (partie 3)
-    //float hauteur; // de la particule dans le repère du monde (partie 3)
+    // float sens; // du vol (partie 3)
+    float hauteur; // de la particule dans le repère du monde (partie 3)
 } AttribsIn[];
 
 out Attribs {
     vec4 couleur;
     vec2 texCoord;
     float tempsDeVieRestant;
+    int estInerte;
 } AttribsOut;
 
 // la hauteur minimale en-dessous de laquelle les lutins ne tournent plus (partie 3)
@@ -35,6 +36,9 @@ const float hauteurVol = 8.0;
 
 void main()
 {
+    AttribsOut.estInerte = 1;
+    if ( AttribsIn[0].hauteur > hauteurVol ) AttribsOut.estInerte = 0;
+    
     vec2 decalage[4];
     decalage[0] = vec2( -0.5 * gl_in[0].gl_PointSize,  0.5 * gl_in[0].gl_PointSize);
     decalage[1] = vec2( -0.5 * gl_in[0].gl_PointSize, -0.5 * gl_in[0].gl_PointSize);
@@ -50,30 +54,18 @@ void main()
     for ( int i = 0 ; i < 4 ; ++i ) {
 
         AttribsOut.texCoord = texture[i];
-
-        
         vec4 transformPos = gl_in[0].gl_Position;
-        gl_Position = matrProj * gl_in[0].gl_Position;
-        // gl_Position = vec4(0.0, decalage[i].x, decalage[i].y, 0.0); // matrVisu * matrModel;
-
-        if ( texnumero == 2 ) {
-            mat2 rotation;
-            float theta = 4.0 * AttribsIn[0].tempsDeVieRestant;
-            rotation[0] = vec2(cos(theta), sin(theta));
-            rotation[1] = vec2(-sin(theta), cos(theta));
-           //  gl_Position = vec4(gl_Position.x, rotation * gl_Position.yz, gl_Position.w);
-
-        }
+        // gl_Position = vec4(0.0, decalage[i].x, decalage[i].y, 0.0);
 
         // assigner la position du point
-        gl_Position = matrProj * (gl_Position + transformPos); //  matrVisu * matrModel *
+        gl_Position = matrProj * vec4(transformPos.x + decalage[i].x, transformPos.y + decalage[i].y, transformPos.z, 1.0);
 
         // assigner la taille des points (en pixels)
         gl_PointSize = gl_in[0].gl_PointSize;
 
         // assigner la couleur courante
-        AttribsOut.couleur = AttribsIn[0].couleur;
-
+        AttribsOut.couleur =  AttribsIn[0].couleur;
+        if (texnumero == 1) AttribsOut.couleur *=  (AttribsIn[0].tempsDeVieRestant / tempsDeVieMax);
 
         AttribsOut.tempsDeVieRestant = AttribsIn[0].tempsDeVieRestant;
         EmitVertex();

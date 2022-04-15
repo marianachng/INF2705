@@ -21,12 +21,14 @@ layout(location=5) in float tempsDeVieRestant;
 out Attribs {
     vec4 couleur;
     float tempsDeVieRestant;
+    // int estInerte;
     //float sens; // du vol (partie 3)
-    //float hauteur; // de la particule dans le repère du monde (partie 3)
+    float hauteur; // de la particule dans le repère du monde (partie 3)
 } AttribsOut;
 
 void main( void )
 {
+    AttribsOut.hauteur = (matrModel * Vertex).z;
     // transformation standard du sommet, ** sans la projection **
     gl_Position = matrVisu * matrModel * Vertex; // 
 
