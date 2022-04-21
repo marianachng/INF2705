@@ -20,6 +20,7 @@ void main( void )
         if( texnumero == 1 ) {
             const float nlutins = 20.0; // 20 positions de vol dans la texture
             int num = int ( mod ( 12.0 * AttribsIn.tempsDeVieRestant , nlutins ) ); // 12 Hz
+             if((AttribsIn.estInerte == 1) && (num > 14)) num = 0;
             currentTex.s = ( currentTex.s + num ) / nlutins ;
         }
 
