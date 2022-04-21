@@ -4,8 +4,6 @@ layout(points) in;
 layout(triangle_strip, max_vertices = 4) out;
 
 uniform mat4 matrProj;
-//uniform mat4 matrModel;
-//uniform mat4 matrVisu;
 uniform int texnumero;
 
 layout (std140) uniform varsUnif
@@ -28,7 +26,7 @@ out Attribs {
     vec4 couleur;
     vec2 texCoord;
     float tempsDeVieRestant;
-    int estInerte;
+    float estInerte;
 } AttribsOut;
 
 // la hauteur minimale en-dessous de laquelle les lutins ne tournent plus (partie 3)
@@ -36,8 +34,7 @@ const float hauteurVol = 8.0;
 
 void main()
 {
-    AttribsOut.estInerte = 1;
-    if ( AttribsIn[0].hauteur > hauteurVol ) AttribsOut.estInerte = 0;
+    AttribsOut.estInerte = (AttribsIn[0].hauteur < hauteurVol) ? 1.0 : 0.0;
     
     vec2 decalage[4];
     decalage[0] = vec2( -0.5 * gl_in[0].gl_PointSize,  0.5 * gl_in[0].gl_PointSize);
@@ -55,8 +52,7 @@ void main()
 
         AttribsOut.texCoord = texture[i];
         vec4 transformPos = gl_in[0].gl_Position;
-        // gl_Position = vec4(0.0, decalage[i].x, decalage[i].y, 0.0);
-         if( texnumero == 1 ) decalage[i].x *= -AttribsIn[0].sens;
+        if( texnumero == 1 ) decalage[i].x *= -AttribsIn[0].sens;
 
         // assigner la position du point
         gl_Position = matrProj * vec4(transformPos.x + decalage[i].x, transformPos.y + decalage[i].y, transformPos.z, 1.0);
@@ -70,9 +66,5 @@ void main()
 
         AttribsOut.tempsDeVieRestant = AttribsIn[0].tempsDeVieRestant;
         EmitVertex();
-
-        
-
     }
-
 }

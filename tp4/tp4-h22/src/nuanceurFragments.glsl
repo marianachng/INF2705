@@ -7,7 +7,7 @@ in Attribs {
     vec4 couleur;
     vec2 texCoord;
     float tempsDeVieRestant;
-    int estInerte;
+    float estInerte;
 } AttribsIn;
 
 out vec4 FragColor;
@@ -20,11 +20,11 @@ void main( void )
         if( texnumero == 1 ) {
             const float nlutins = 20.0; // 20 positions de vol dans la texture
             int num = int ( mod ( 12.0 * AttribsIn.tempsDeVieRestant , nlutins ) ); // 12 Hz
-             if((AttribsIn.estInerte == 1) && (num > 14)) num = 0;
+            if((AttribsIn.estInerte > 0.5) && (num > 14)) num = 0;
             currentTex.s = ( currentTex.s + num ) / nlutins ;
         }
 
-        else if ( (texnumero == 2) && (AttribsIn.estInerte == 0)) {
+        else if ( (texnumero == 2) && !(AttribsIn.estInerte > 0.5)) {
             mat2 rotation;
             float theta = 4.0 * AttribsIn.tempsDeVieRestant;
             rotation[0] = vec2(cos(theta), sin(theta));

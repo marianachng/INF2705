@@ -2,7 +2,6 @@
 
 uniform mat4 matrModel;
 uniform mat4 matrVisu;
-//uniform mat4 matrProj;
 
 layout (std140) uniform varsUnif
 {
@@ -21,7 +20,6 @@ layout(location=5) in float tempsDeVieRestant;
 out Attribs {
     vec4 couleur;
     float tempsDeVieRestant;
-    // int estInerte;
     float sens; // du vol (partie 3)
     float hauteur; // de la particule dans le repère du monde (partie 3)
 } AttribsOut;
@@ -29,10 +27,13 @@ out Attribs {
 void main( void )
 {
     AttribsOut.hauteur = (matrModel * Vertex).z;
+
     // transformation standard du sommet, ** sans la projection **
-    gl_Position = matrVisu * matrModel * Vertex; // 
-    vec4 marche = matrVisu * matrModel * vec4(vitesse, 1);
+    gl_Position = matrVisu * matrModel * Vertex;
+
+    vec4 marche = matrVisu * matrModel * vec4(vitesse, 1.0);
     AttribsOut.sens = sign(marche.x);
+
     AttribsOut.tempsDeVieRestant = tempsDeVieRestant;
 
     // couleur du sommet
@@ -40,8 +41,4 @@ void main( void )
 
     // assigner la taille des points (en pixels)
     gl_PointSize = pointsize;
-
-    // À SUPPRIMER: les lignes suivantes servent seulement à forcer le compilateur à conserver cet attribut
-    // Vous ENLEVEREZ cet énoncé inutile!
-    if ( tempsDeVieRestant < 0.0 ) { AttribsOut.couleur.rgb += 0.00001*vitesse; AttribsOut.couleur.a += 0.00001; }
 }
