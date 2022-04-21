@@ -20,7 +20,7 @@ layout (std140) uniform varsUnif
 in Attribs {
     vec4 couleur;
     float tempsDeVieRestant;
-    // float sens; // du vol (partie 3)
+    float sens; // du vol (partie 3)
     float hauteur; // de la particule dans le repère du monde (partie 3)
 } AttribsIn[];
 
@@ -56,6 +56,7 @@ void main()
         AttribsOut.texCoord = texture[i];
         vec4 transformPos = gl_in[0].gl_Position;
         // gl_Position = vec4(0.0, decalage[i].x, decalage[i].y, 0.0);
+         if( texnumero == 1 ) decalage[i].x *= -AttribsIn[0].sens;
 
         // assigner la position du point
         gl_Position = matrProj * vec4(transformPos.x + decalage[i].x, transformPos.y + decalage[i].y, transformPos.z, 1.0);

@@ -22,7 +22,7 @@ out Attribs {
     vec4 couleur;
     float tempsDeVieRestant;
     // int estInerte;
-    //float sens; // du vol (partie 3)
+    float sens; // du vol (partie 3)
     float hauteur; // de la particule dans le repère du monde (partie 3)
 } AttribsOut;
 
@@ -31,7 +31,8 @@ void main( void )
     AttribsOut.hauteur = (matrModel * Vertex).z;
     // transformation standard du sommet, ** sans la projection **
     gl_Position = matrVisu * matrModel * Vertex; // 
-
+    vec4 marche = matrVisu * matrModel * vec4(vitesse, 1);
+    AttribsOut.sens = sign(marche.x);
     AttribsOut.tempsDeVieRestant = tempsDeVieRestant;
 
     // couleur du sommet
